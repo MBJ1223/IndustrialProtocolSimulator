@@ -1,0 +1,36 @@
+﻿<Page x:Class="TCP_MC_Protocol.Views.Left"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:TCP_MC_Protocol.Views"
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      mc:Ignorable="d" 
+      d:DesignHeight="900" d:DesignWidth="800"
+      Title="Left">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Loaded_Command}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid>
+        <Grid.Background>
+            <RadialGradientBrush>
+                <GradientStop Color="#FFC7BE85" Offset="1"/>
+                <GradientStop Color="#FFEEEEEE" Offset="0.699"/>
+            </RadialGradientBrush>
+        </Grid.Background>
+        <TextBlock HorizontalAlignment="Left" Height="38" Margin="93,24,0,0" TextWrapping="Wrap" Text="MC Protocol Sever" VerticalAlignment="Top" Width="187" FontSize="18" FontWeight="Bold"/>
+        <TextBlock HorizontalAlignment="Left" Height="17" Margin="93,88,0,0" TextWrapping="Wrap" Text="Process Result Information" VerticalAlignment="Top" Width="187" FontSize="14" FontWeight="Bold" Foreground="Black"/>
+        <ListBox ItemsSource="{Binding ListBoxProcessInfo}" HorizontalAlignment="Left" Height="306" Margin="93,124,0,0" VerticalAlignment="Top" Width="638"/>
+        <TextBlock HorizontalAlignment="Left" Height="17" Margin="93,473,0,0" TextWrapping="Wrap" Text="Protocol Origin Packet" VerticalAlignment="Top" Width="171" FontSize="14" FontWeight="Bold" Foreground="Black"/>
+        <ListBox ItemsSource="{Binding ListBoxOriginlInfo}" HorizontalAlignment="Left" Height="306" Margin="93,509,0,0" VerticalAlignment="Top" Width="638"/>
+        <!--<TextBlock HorizontalAlignment="Left" Height="38" Margin="603,10,0,0" TextWrapping="Wrap" Text="{Binding TextBlockOpenPort}" VerticalAlignment="Top" Width="187" FontSize="15" FontWeight="Bold" RenderTransformOrigin="0.802,0"/>-->
+        <TextBox Text="{Binding TextBoxServerPort}" HorizontalAlignment="Left" Height="24" Margin="358,27,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="116" RenderTransformOrigin="0.017,0.292"/>
+        <Button Content="Open Server" Command="{Binding OpenServerCommand}" HorizontalAlignment="Left" Height="24" Margin="491,27,0,0" VerticalAlignment="Top" Width="85" Background="GreenYellow"/>
+        <Label Content="Open Port" HorizontalAlignment="Left" Height="25" Margin="280,26,0,0" VerticalAlignment="Top" Width="72"/>
+        <Button Content="Close Server" Command="{Binding CloseServerCommand}" HorizontalAlignment="Left" Height="24" Margin="591,27,0,0" VerticalAlignment="Top" Width="85" Background="Red"/>
+
+    </Grid>
+</Page>

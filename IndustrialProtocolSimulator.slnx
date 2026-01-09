@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="McProtocolSimulator/McProtocolSimulator.csproj" />
+    <Project Path="ModbusProtocolSimulator/ModbusProtocolSimulator.csproj" />
+    <Project Path="MqttBrokerSimulator/MqttBrokerSimulator.csproj" />
+    <Project Path="OpcUaServerSimulator/OpcUaServerSimulator.csproj" />
+    <Project Path="S7ProtocolSimulator/S7ProtocolSimulator.csproj" />
+  </Folder>
+</Solution>

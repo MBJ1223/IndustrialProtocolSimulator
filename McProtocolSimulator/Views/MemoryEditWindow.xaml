@@ -1,0 +1,45 @@
+<Window x:Class="McProtocolSimulator.Views.MemoryEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="메모리 값 편집"
+        Height="200" Width="350"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="80"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Grid.Row="0" Grid.Column="0" Content="디바이스:" VerticalAlignment="Center"/>
+        <ComboBox Grid.Row="0" Grid.Column="1" x:Name="DeviceCombo" Margin="0,0,0,5">
+            <ComboBoxItem Content="D (데이터 레지스터)" IsSelected="True"/>
+            <ComboBoxItem Content="M (내부 릴레이)"/>
+            <ComboBoxItem Content="X (입력)"/>
+            <ComboBoxItem Content="Y (출력)"/>
+        </ComboBox>
+
+        <Label Grid.Row="1" Grid.Column="0" Content="주소:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="1" Grid.Column="1" x:Name="AddressTextBox" Margin="0,0,0,5" Text="0"/>
+
+        <Label Grid.Row="2" Grid.Column="0" Content="값:" VerticalAlignment="Center"/>
+        <TextBox Grid.Row="2" Grid.Column="1" x:Name="ValueTextBox" Margin="0,0,0,5" Text="0"/>
+
+        <TextBlock Grid.Row="3" Grid.ColumnSpan="2" Foreground="Gray" FontSize="11"
+                   Text="- D, W: 워드 값 (0~65535)&#10;- M, X, Y: 비트 값 (0 또는 1)"
+                   Margin="0,5"/>
+
+        <StackPanel Grid.Row="4" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="쓰기" Width="70" Click="WriteButton_Click" Margin="0,0,5,0"/>
+            <Button Content="닫기" Width="70" Click="CloseButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

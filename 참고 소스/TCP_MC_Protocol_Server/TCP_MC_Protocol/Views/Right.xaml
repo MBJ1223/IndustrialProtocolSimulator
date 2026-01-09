@@ -1,0 +1,50 @@
+﻿<Page x:Class="TCP_MC_Protocol.Views.Right"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:TCP_MC_Protocol.Views"
+      xmlns:prism="http://prismlibrary.com/"
+      prism:ViewModelLocator.AutoWireViewModel="True"
+      xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+      mc:Ignorable="d" 
+      d:DesignHeight="900" d:DesignWidth="600"
+      Title="Right">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Loaded">
+            <i:InvokeCommandAction Command="{Binding Loaded_Command}"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+
+    <Grid>
+        <Grid.Background>
+            <RadialGradientBrush>
+                <GradientStop Color="White" Offset="0.7"/>
+                <GradientStop Color="#FFC7BE85" Offset="1"/>
+            </RadialGradientBrush>
+        </Grid.Background>
+        <TextBlock HorizontalAlignment="Left" Height="38" Margin="380,10,0,0" TextWrapping="Wrap" Text="{Binding TextBlockOpenPort}" VerticalAlignment="Top" Width="187" FontSize="15" FontWeight="Bold" RenderTransformOrigin="0.802,0"/>
+        <TextBlock HorizontalAlignment="Left" Height="23" Margin="74,89,0,0" TextWrapping="Wrap" Text="Move to Address" VerticalAlignment="Top" Width="108" Foreground="Black"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="187,88,0,0" TextWrapping="Wrap" Text="{Binding TextBoxViewAddr}" VerticalAlignment="Top" Width="118" RenderTransformOrigin="0.132,0.192">
+            <TextBox.InputBindings>
+                <KeyBinding Command="{Binding EnterViewStart}" Key="Enter"/>
+            </TextBox.InputBindings>
+        </TextBox>
+        <Button Command="{Binding ViewStartCommand}" Content="Start" HorizontalAlignment="Left" Height="24" Margin="330,88,0,0" VerticalAlignment="Top" Width="57"/>
+        <DataGrid ItemsSource="{Binding WordDataInfo}" SelectedIndex="{Binding SelectedIndex}"  HorizontalAlignment="Left" Height="646" Margin="74,129,0,0" VerticalAlignment="Top" Width="440" CanUserAddRows="False" AutoGenerateColumns="False" CanUserReorderColumns="False" CanUserResizeColumns="False" CanUserResizeRows="False" CanUserSortColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Address" Width="1*" Binding="{Binding WordName}" IsReadOnly="True"/>
+                <DataGridTextColumn Header="Value" Width="1*" Binding="{Binding WordValue}" IsReadOnly="False"/>
+                <DataGridTextColumn Header="ASCII Mode" Width="1*" Binding="{Binding ASCII}" IsReadOnly="False"/>
+            </DataGrid.Columns>
+
+
+            <DataGrid.InputBindings>
+                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding DoubleClickCommand}"/>
+                <KeyBinding Command="{Binding ValueEditApply}" Key="Enter"/>
+            </DataGrid.InputBindings>
+        </DataGrid>
+        <Button Command="{Binding ViewStopCommand}" Content="Stop" HorizontalAlignment="Left" Height="24" Margin="403,87,0,0" VerticalAlignment="Top" Width="57"/>
+        
+    </Grid>
+</Page>
