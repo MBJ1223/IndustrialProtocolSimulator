@@ -170,8 +170,9 @@ public class MainViewModel : INotifyPropertyChanged
                 MemoryItems.Add(new ModbusMemoryItem
                 {
                     Address = $"{prefix}{ViewStartAddress + i:D5}",
-                    Value = bits[i] ? "1 (ON)" : "0 (OFF)",
-                    HexValue = bits[i] ? "0x0001" : "0x0000",
+                    DecimalValue = bits[i] ? "1" : "0",
+                    HexValue = bits[i] ? "0x01" : "0x00",
+                    BinaryValue = bits[i] ? "1" : "0",
                     RawValue = bits[i] ? (ushort)1 : (ushort)0
                 });
             }
@@ -190,8 +191,9 @@ public class MainViewModel : INotifyPropertyChanged
                 MemoryItems.Add(new ModbusMemoryItem
                 {
                     Address = $"{prefix}{ViewStartAddress + i:D5}",
-                    Value = registers[i].ToString(),
+                    DecimalValue = registers[i].ToString(),
                     HexValue = $"0x{registers[i]:X4}",
+                    BinaryValue = Convert.ToString(registers[i], 2).PadLeft(16, '0'),
                     RawValue = registers[i]
                 });
             }
@@ -276,13 +278,15 @@ public class MainViewModel : INotifyPropertyChanged
 public class ModbusMemoryItem : INotifyPropertyChanged
 {
     private string _address = "";
-    private string _value = "";
+    private string _decimalValue = "";
     private string _hexValue = "";
+    private string _binaryValue = "";
     private ushort _rawValue;
 
     public string Address { get => _address; set { _address = value; OnPropertyChanged(); } }
-    public string Value { get => _value; set { _value = value; OnPropertyChanged(); } }
+    public string DecimalValue { get => _decimalValue; set { _decimalValue = value; OnPropertyChanged(); } }
     public string HexValue { get => _hexValue; set { _hexValue = value; OnPropertyChanged(); } }
+    public string BinaryValue { get => _binaryValue; set { _binaryValue = value; OnPropertyChanged(); } }
     public ushort RawValue { get => _rawValue; set { _rawValue = value; OnPropertyChanged(); } }
 
     public event PropertyChangedEventHandler? PropertyChanged;

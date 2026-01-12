@@ -10,46 +10,95 @@
     </Window.DataContext>
 
     <Window.Resources>
-        <Style TargetType="GroupBox"><Setter Property="Margin" Value="5"/><Setter Property="Padding" Value="5"/></Style>
-        <Style TargetType="Button"><Setter Property="Padding" Value="10,5"/><Setter Property="Margin" Value="2"/></Style>
-        <Style TargetType="TextBox"><Setter Property="Padding" Value="3"/><Setter Property="Margin" Value="2"/></Style>
+        <!-- MQTT 테마 색상: 초록색 계열 (IoT/메시징) -->
+        <Color x:Key="MqttPrimaryColor">#FF2E7D32</Color>
+        <Color x:Key="MqttSecondaryColor">#FF43A047</Color>
+        <Color x:Key="MqttAccentColor">#FF66BB6A</Color>
+        <Color x:Key="MqttDarkColor">#FF1B5E20</Color>
+        <Color x:Key="MqttLightBgColor">#FFE8F5E9</Color>
+
+        <SolidColorBrush x:Key="MqttPrimaryBrush" Color="{StaticResource MqttPrimaryColor}"/>
+        <SolidColorBrush x:Key="MqttSecondaryBrush" Color="{StaticResource MqttSecondaryColor}"/>
+        <SolidColorBrush x:Key="MqttAccentBrush" Color="{StaticResource MqttAccentColor}"/>
+        <SolidColorBrush x:Key="MqttDarkBrush" Color="{StaticResource MqttDarkColor}"/>
+        <SolidColorBrush x:Key="MqttLightBgBrush" Color="{StaticResource MqttLightBgColor}"/>
+
+        <Style TargetType="GroupBox">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderBrush" Value="{StaticResource MqttPrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="3"/>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
     </Window.Resources>
 
-    <Grid>
+    <Grid Background="{StaticResource MqttLightBgBrush}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <!-- 헤더 배너 -->
+        <Border Grid.Row="0" Background="{StaticResource MqttPrimaryBrush}" Padding="15,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="MQTT" FontSize="28" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
+                    <TextBlock Text="BROKER" FontSize="14" Foreground="#FFC8E6C9" VerticalAlignment="Bottom" Margin="5,0,0,5"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="Message Queuing Telemetry Transport" FontSize="14" Foreground="#FFC8E6C9"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Border Grid.Column="2" Background="#FF1B5E20" CornerRadius="3" Padding="10,5">
+                    <TextBlock Text="v3.1.1 / Port 1883" Foreground="White" FontSize="11"/>
+                </Border>
+            </Grid>
+        </Border>
+
         <!-- 브로커 설정 -->
-        <GroupBox Grid.Row="0" Header="브로커 설정">
+        <GroupBox Grid.Row="1" Header="브로커 설정" Margin="5,5,5,0">
             <StackPanel Orientation="Horizontal">
                 <Label Content="포트:" VerticalAlignment="Center"/>
                 <TextBox Text="{Binding Port}" Width="80" IsEnabled="{Binding CanStart}"/>
-                <Button Content="브로커 시작" Command="{Binding StartBrokerCommand}" Background="#FF4CAF50" Foreground="White"/>
-                <Button Content="브로커 중지" Command="{Binding StopBrokerCommand}" Background="#FFF44336" Foreground="White"/>
+                <Button Content="브로커 시작" Command="{Binding StartBrokerCommand}"
+                        Background="{StaticResource MqttPrimaryBrush}" Foreground="White"/>
+                <Button Content="브로커 중지" Command="{Binding StopBrokerCommand}"
+                        Background="#FF555555" Foreground="White"/>
                 <Separator Margin="10,0"/>
                 <Label Content="상태:" VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" FontWeight="Bold"/>
+                <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" FontWeight="Bold"
+                           Foreground="{StaticResource MqttDarkBrush}"/>
             </StackPanel>
         </GroupBox>
 
         <!-- 메시지 발행 -->
-        <GroupBox Grid.Row="1" Header="메시지 발행 (테스트용)">
+        <GroupBox Grid.Row="2" Header="메시지 발행 (테스트용)">
             <StackPanel Orientation="Horizontal">
                 <Label Content="Topic:" VerticalAlignment="Center"/>
                 <TextBox Text="{Binding PublishTopic}" Width="200"/>
                 <Label Content="Payload:" VerticalAlignment="Center" Margin="10,0,0,0"/>
                 <TextBox Text="{Binding PublishPayload}" Width="250"/>
                 <CheckBox Content="Retain" IsChecked="{Binding PublishRetain}" VerticalAlignment="Center" Margin="10,0"/>
-                <Button Content="발행" Command="{Binding PublishCommand}" Background="#FF2196F3" Foreground="White"/>
+                <Button Content="발행" Command="{Binding PublishCommand}"
+                        Background="{StaticResource MqttSecondaryBrush}" Foreground="White"/>
             </StackPanel>
         </GroupBox>
 
         <!-- 메인 컨텐츠 -->
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="500"/>
@@ -65,7 +114,16 @@
 
                     <DataGrid Grid.Row="0" ItemsSource="{Binding Messages}" AutoGenerateColumns="False"
                               IsReadOnly="True" CanUserAddRows="False" GridLinesVisibility="All"
-                              AlternatingRowBackground="#FFF5F5F5" FontFamily="Consolas">
+                              AlternatingRowBackground="{StaticResource MqttLightBgBrush}" FontFamily="Consolas"
+                              ColumnHeaderHeight="28" RowHeaderWidth="0">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="{StaticResource MqttPrimaryBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Padding" Value="8,4"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="시간" Binding="{Binding Timestamp, StringFormat=HH:mm:ss}" Width="80"/>
                             <DataGridTextColumn Header="Topic" Binding="{Binding Topic}" Width="200"/>
@@ -88,7 +146,15 @@
 
                 <!-- 연결된 클라이언트 -->
                 <GroupBox Grid.Row="0" Header="연결된 클라이언트">
-                    <DataGrid ItemsSource="{Binding ConnectedClients}" AutoGenerateColumns="False" IsReadOnly="True" FontSize="11">
+                    <DataGrid ItemsSource="{Binding ConnectedClients}" AutoGenerateColumns="False" IsReadOnly="True" FontSize="11"
+                              AlternatingRowBackground="{StaticResource MqttLightBgBrush}">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="{StaticResource MqttDarkBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Padding" Value="5,3"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ClientId" Binding="{Binding ClientId}" Width="100"/>
                             <DataGridTextColumn Header="IP" Binding="{Binding RemoteEndPoint}" Width="*"/>
@@ -107,13 +173,14 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <ListBox Grid.Row="0" ItemsSource="{Binding LogEntries}" FontFamily="Consolas" FontSize="11" x:Name="LogListBox"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                                 ScrollViewer.HorizontalScrollBarVisibility="Auto" Background="White">
                             <ListBox.ItemTemplate>
                                 <DataTemplate><TextBlock Text="{Binding}" TextWrapping="NoWrap"/></DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
                         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
-                            <Button Content="로그 저장" Command="{Binding SaveLogCommand}" Background="#FF2196F3" Foreground="White"/>
+                            <Button Content="로그 저장" Command="{Binding SaveLogCommand}"
+                                    Background="{StaticResource MqttSecondaryBrush}" Foreground="White"/>
                             <Button Content="로그 지우기" Command="{Binding ClearLogCommand}"/>
                         </StackPanel>
                     </Grid>
@@ -122,12 +189,12 @@
         </Grid>
 
         <!-- 하단 상태바 -->
-        <StatusBar Grid.Row="3">
-            <StatusBarItem><TextBlock Text="MQTT Broker (v3.1.1) Simulator"/></StatusBarItem>
+        <StatusBar Grid.Row="4" Background="{StaticResource MqttDarkBrush}">
+            <StatusBarItem><TextBlock Text="MQTT Broker (v3.1.1) Simulator" Foreground="White"/></StatusBarItem>
             <Separator/>
-            <StatusBarItem><TextBlock Text="기본 포트: 1883"/></StatusBarItem>
+            <StatusBarItem><TextBlock Text="기본 포트: 1883" Foreground="#FFC8E6C9"/></StatusBarItem>
             <Separator/>
-            <StatusBarItem><TextBlock Text="지원: CONNECT, PUBLISH, SUBSCRIBE, UNSUBSCRIBE, PING"/></StatusBarItem>
+            <StatusBarItem><TextBlock Text="지원: CONNECT, PUBLISH, SUBSCRIBE, UNSUBSCRIBE, PING" Foreground="#FFC8E6C9"/></StatusBarItem>
         </StatusBar>
     </Grid>
 </Window>

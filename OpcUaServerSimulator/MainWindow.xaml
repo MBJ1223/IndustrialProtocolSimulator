@@ -10,48 +10,97 @@
     </Window.DataContext>
 
     <Window.Resources>
-        <Style TargetType="GroupBox"><Setter Property="Margin" Value="5"/><Setter Property="Padding" Value="5"/></Style>
-        <Style TargetType="Button"><Setter Property="Padding" Value="10,5"/><Setter Property="Margin" Value="2"/></Style>
-        <Style TargetType="TextBox"><Setter Property="Padding" Value="3"/><Setter Property="Margin" Value="2"/></Style>
+        <!-- OPC UA 테마 색상: 보라색 계열 (산업 자동화 표준) -->
+        <Color x:Key="OpcUaPrimaryColor">#FF6A1B9A</Color>
+        <Color x:Key="OpcUaSecondaryColor">#FF8E24AA</Color>
+        <Color x:Key="OpcUaAccentColor">#FFAB47BC</Color>
+        <Color x:Key="OpcUaDarkColor">#FF4A148C</Color>
+        <Color x:Key="OpcUaLightBgColor">#FFF3E5F5</Color>
+
+        <SolidColorBrush x:Key="OpcUaPrimaryBrush" Color="{StaticResource OpcUaPrimaryColor}"/>
+        <SolidColorBrush x:Key="OpcUaSecondaryBrush" Color="{StaticResource OpcUaSecondaryColor}"/>
+        <SolidColorBrush x:Key="OpcUaAccentBrush" Color="{StaticResource OpcUaAccentColor}"/>
+        <SolidColorBrush x:Key="OpcUaDarkBrush" Color="{StaticResource OpcUaDarkColor}"/>
+        <SolidColorBrush x:Key="OpcUaLightBgBrush" Color="{StaticResource OpcUaLightBgColor}"/>
+
+        <Style TargetType="GroupBox">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderBrush" Value="{StaticResource OpcUaPrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="3"/>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
     </Window.Resources>
 
-    <Grid>
+    <Grid Background="{StaticResource OpcUaLightBgBrush}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <!-- 헤더 배너 -->
+        <Border Grid.Row="0" Background="{StaticResource OpcUaPrimaryBrush}" Padding="15,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="OPC" FontSize="28" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
+                    <TextBlock Text="UA" FontSize="28" FontWeight="Light" Foreground="#FFE1BEE7" VerticalAlignment="Center" Margin="3,0,0,0"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="Unified Architecture Server" FontSize="14" Foreground="#FFE1BEE7"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Border Grid.Column="2" Background="#FF4A148C" CornerRadius="3" Padding="10,5">
+                    <TextBlock Text="Port 4840" Foreground="White" FontSize="11"/>
+                </Border>
+            </Grid>
+        </Border>
+
         <!-- 서버 설정 -->
-        <GroupBox Grid.Row="0" Header="서버 설정">
+        <GroupBox Grid.Row="1" Header="서버 설정" Margin="5,5,5,0">
             <StackPanel Orientation="Horizontal">
                 <Label Content="포트:" VerticalAlignment="Center"/>
                 <TextBox Text="{Binding Port}" Width="80" IsEnabled="{Binding CanStart}"/>
-                <Button Content="서버 시작" Command="{Binding StartServerCommand}" Background="#FF4CAF50" Foreground="White"/>
-                <Button Content="서버 중지" Command="{Binding StopServerCommand}" Background="#FFF44336" Foreground="White"/>
+                <Button Content="서버 시작" Command="{Binding StartServerCommand}"
+                        Background="{StaticResource OpcUaPrimaryBrush}" Foreground="White"/>
+                <Button Content="서버 중지" Command="{Binding StopServerCommand}"
+                        Background="#FF555555" Foreground="White"/>
                 <Separator Margin="10,0"/>
                 <CheckBox Content="시뮬레이션 활성화" IsChecked="{Binding SimulationEnabled}" VerticalAlignment="Center" Margin="5,0"/>
                 <Separator Margin="10,0"/>
                 <Label Content="상태:" VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" FontWeight="Bold"/>
+                <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" FontWeight="Bold"
+                           Foreground="{StaticResource OpcUaDarkBrush}"/>
             </StackPanel>
         </GroupBox>
 
         <!-- 값 쓰기 -->
-        <GroupBox Grid.Row="1" Header="노드 값 쓰기">
+        <GroupBox Grid.Row="2" Header="노드 값 쓰기">
             <StackPanel Orientation="Horizontal">
                 <Label Content="NodeId:" VerticalAlignment="Center"/>
                 <TextBox Text="{Binding SelectedNodeId}" Width="250"/>
                 <Label Content="Value:" VerticalAlignment="Center" Margin="10,0,0,0"/>
                 <TextBox Text="{Binding WriteValue}" Width="150"/>
-                <Button Content="쓰기" Command="{Binding WriteValueCommand}" Background="#FF2196F3" Foreground="White"/>
+                <Button Content="쓰기" Command="{Binding WriteValueCommand}"
+                        Background="{StaticResource OpcUaSecondaryBrush}" Foreground="White"/>
                 <Button Content="노드 새로고침" Command="{Binding RefreshNodesCommand}"/>
             </StackPanel>
         </GroupBox>
 
         <!-- 메인 컨텐츠 -->
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="500"/>
@@ -61,8 +110,17 @@
             <GroupBox Grid.Column="0" Header="노드 목록 (Variables)">
                 <DataGrid ItemsSource="{Binding Nodes}" AutoGenerateColumns="False"
                           IsReadOnly="True" CanUserAddRows="False" GridLinesVisibility="All"
-                          AlternatingRowBackground="#FFF5F5F5" FontFamily="Consolas"
-                          SelectedItem="{Binding SelectedNode}">
+                          AlternatingRowBackground="{StaticResource OpcUaLightBgBrush}" FontFamily="Consolas"
+                          SelectedItem="{Binding SelectedNode}"
+                          ColumnHeaderHeight="28" RowHeaderWidth="0">
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="{StaticResource OpcUaPrimaryBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="Padding" Value="8,4"/>
+                            <Setter Property="FontWeight" Value="SemiBold"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
                     <DataGrid.Columns>
                         <DataGridTextColumn Header="NodeId" Binding="{Binding NodeId}" Width="200"/>
                         <DataGridTextColumn Header="DisplayName" Binding="{Binding DisplayName}" Width="100"/>
@@ -82,7 +140,15 @@
 
                 <!-- 연결된 클라이언트 -->
                 <GroupBox Grid.Row="0" Header="연결된 클라이언트">
-                    <DataGrid ItemsSource="{Binding ConnectedClients}" AutoGenerateColumns="False" IsReadOnly="True" FontSize="11">
+                    <DataGrid ItemsSource="{Binding ConnectedClients}" AutoGenerateColumns="False" IsReadOnly="True" FontSize="11"
+                              AlternatingRowBackground="{StaticResource OpcUaLightBgBrush}">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="{StaticResource OpcUaDarkBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Padding" Value="5,3"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="IP" Binding="{Binding RemoteEndPoint}" Width="*"/>
                             <DataGridTextColumn Header="Session" Binding="{Binding SessionId}" Width="80"/>
@@ -99,13 +165,14 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <ListBox Grid.Row="0" ItemsSource="{Binding LogEntries}" FontFamily="Consolas" FontSize="11" x:Name="LogListBox"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                                 ScrollViewer.HorizontalScrollBarVisibility="Auto" Background="White">
                             <ListBox.ItemTemplate>
                                 <DataTemplate><TextBlock Text="{Binding}" TextWrapping="NoWrap"/></DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
                         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
-                            <Button Content="로그 저장" Command="{Binding SaveLogCommand}" Background="#FF2196F3" Foreground="White"/>
+                            <Button Content="로그 저장" Command="{Binding SaveLogCommand}"
+                                    Background="{StaticResource OpcUaSecondaryBrush}" Foreground="White"/>
                             <Button Content="로그 지우기" Command="{Binding ClearLogCommand}"/>
                         </StackPanel>
                     </Grid>
@@ -114,12 +181,12 @@
         </Grid>
 
         <!-- 상태바 -->
-        <StatusBar Grid.Row="3">
-            <StatusBarItem><TextBlock Text="OPC UA Server Simulator"/></StatusBarItem>
+        <StatusBar Grid.Row="4" Background="{StaticResource OpcUaDarkBrush}">
+            <StatusBarItem><TextBlock Text="OPC UA Server Simulator" Foreground="White"/></StatusBarItem>
             <Separator/>
-            <StatusBarItem><TextBlock Text="{Binding EndpointUrl, StringFormat=Endpoint: {0}}"/></StatusBarItem>
+            <StatusBarItem><TextBlock Text="{Binding EndpointUrl, StringFormat=Endpoint: {0}}" Foreground="#FFE1BEE7"/></StatusBarItem>
             <Separator/>
-            <StatusBarItem><TextBlock Text="기본 포트: 4840"/></StatusBarItem>
+            <StatusBarItem><TextBlock Text="기본 포트: 4840" Foreground="#FFE1BEE7"/></StatusBarItem>
         </StatusBar>
     </Grid>
 </Window>

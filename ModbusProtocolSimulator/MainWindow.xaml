@@ -10,32 +10,80 @@
     </Window.DataContext>
 
     <Window.Resources>
-        <Style TargetType="GroupBox"><Setter Property="Margin" Value="5"/><Setter Property="Padding" Value="5"/></Style>
-        <Style TargetType="Button"><Setter Property="Padding" Value="10,5"/><Setter Property="Margin" Value="2"/></Style>
-        <Style TargetType="TextBox"><Setter Property="Padding" Value="3"/><Setter Property="Margin" Value="2"/></Style>
+        <!-- Modbus 테마 색상: 주황/노란 계열 (산업 표준) -->
+        <Color x:Key="ModbusPrimaryColor">#FFE67E22</Color>
+        <Color x:Key="ModbusSecondaryColor">#FFF39C12</Color>
+        <Color x:Key="ModbusAccentColor">#FFFFC107</Color>
+        <Color x:Key="ModbusDarkColor">#FFD35400</Color>
+        <Color x:Key="ModbusLightBgColor">#FFFFF8F0</Color>
+
+        <SolidColorBrush x:Key="ModbusPrimaryBrush" Color="{StaticResource ModbusPrimaryColor}"/>
+        <SolidColorBrush x:Key="ModbusSecondaryBrush" Color="{StaticResource ModbusSecondaryColor}"/>
+        <SolidColorBrush x:Key="ModbusAccentBrush" Color="{StaticResource ModbusAccentColor}"/>
+        <SolidColorBrush x:Key="ModbusDarkBrush" Color="{StaticResource ModbusDarkColor}"/>
+        <SolidColorBrush x:Key="ModbusLightBgBrush" Color="{StaticResource ModbusLightBgColor}"/>
+
+        <Style TargetType="GroupBox">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderBrush" Value="{StaticResource ModbusPrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="3"/>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
     </Window.Resources>
 
-    <Grid>
+    <Grid Background="{StaticResource ModbusLightBgBrush}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <GroupBox Grid.Row="0" Header="서버 설정">
+        <!-- 헤더 배너 -->
+        <Border Grid.Row="0" Background="{StaticResource ModbusPrimaryBrush}" Padding="15,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="MODBUS" FontSize="28" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
+                    <TextBlock Text="TCP" FontSize="14" Foreground="#FFFFF0D0" VerticalAlignment="Bottom" Margin="5,0,0,5"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="Industrial Standard Protocol" FontSize="14" Foreground="#FFFFF5E0"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Border Grid.Column="2" Background="#FFCC6600" CornerRadius="3" Padding="10,5">
+                    <TextBlock Text="Port 502" Foreground="White" FontSize="11"/>
+                </Border>
+            </Grid>
+        </Border>
+
+        <GroupBox Grid.Row="1" Header="서버 설정" Margin="5,5,5,0">
             <StackPanel Orientation="Horizontal">
                 <Label Content="포트:" VerticalAlignment="Center"/>
                 <TextBox Text="{Binding Port}" Width="80" IsEnabled="{Binding CanStart}"/>
-                <Button Content="서버 시작" Command="{Binding StartServerCommand}" Background="#FF4CAF50" Foreground="White"/>
-                <Button Content="서버 중지" Command="{Binding StopServerCommand}" Background="#FFF44336" Foreground="White"/>
+                <Button Content="서버 시작" Command="{Binding StartServerCommand}"
+                        Background="{StaticResource ModbusPrimaryBrush}" Foreground="White"/>
+                <Button Content="서버 중지" Command="{Binding StopServerCommand}"
+                        Background="#FF555555" Foreground="White"/>
                 <Separator Margin="10,0"/>
                 <Label Content="상태:" VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" FontWeight="Bold"/>
+                <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" FontWeight="Bold"
+                           Foreground="{StaticResource ModbusDarkBrush}"/>
             </StackPanel>
         </GroupBox>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="500"/>
@@ -60,17 +108,29 @@
 
                     <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,5">
                         <Button Content="새로고침" Command="{Binding RefreshMemoryCommand}"/>
-                        <Button Content="메모리 초기화" Command="{Binding ClearMemoryCommand}" Background="#FFFFC107"/>
-                        <Button Content="값 편집" Click="EditMemory_Click" Background="#FF2196F3" Foreground="White"/>
+                        <Button Content="메모리 초기화" Command="{Binding ClearMemoryCommand}"
+                                Background="{StaticResource ModbusAccentBrush}"/>
+                        <Button Content="값 편집" Click="EditMemory_Click"
+                                Background="{StaticResource ModbusSecondaryBrush}" Foreground="White"/>
                     </StackPanel>
 
                     <DataGrid Grid.Row="2" ItemsSource="{Binding MemoryItems}" AutoGenerateColumns="False"
                               IsReadOnly="True" CanUserAddRows="False" GridLinesVisibility="All"
-                              AlternatingRowBackground="#FFF5F5F5" RowHeight="24" FontFamily="Consolas">
+                              AlternatingRowBackground="{StaticResource ModbusLightBgBrush}" RowHeight="24" FontFamily="Consolas"
+                              ColumnHeaderHeight="28" RowHeaderWidth="0">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="{StaticResource ModbusPrimaryBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Padding" Value="8,4"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="주소" Binding="{Binding Address}" Width="100"/>
-                            <DataGridTextColumn Header="값" Binding="{Binding Value}" Width="120"/>
-                            <DataGridTextColumn Header="16진수" Binding="{Binding HexValue}" Width="*"/>
+                            <DataGridTextColumn Header="10진수" Binding="{Binding DecimalValue}" Width="80"/>
+                            <DataGridTextColumn Header="16진수" Binding="{Binding HexValue}" Width="80"/>
+                            <DataGridTextColumn Header="2진수" Binding="{Binding BinaryValue}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
@@ -83,7 +143,15 @@
                 </Grid.RowDefinitions>
 
                 <GroupBox Grid.Row="0" Header="연결된 클라이언트">
-                    <DataGrid ItemsSource="{Binding ConnectedClients}" AutoGenerateColumns="False" IsReadOnly="True" FontSize="11">
+                    <DataGrid ItemsSource="{Binding ConnectedClients}" AutoGenerateColumns="False" IsReadOnly="True" FontSize="11"
+                              AlternatingRowBackground="{StaticResource ModbusLightBgBrush}">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="{StaticResource ModbusDarkBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Padding" Value="5,3"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="IP" Binding="{Binding RemoteEndPoint}" Width="*"/>
                             <DataGridTextColumn Header="Unit ID" Binding="{Binding UnitId}" Width="60"/>
@@ -100,13 +168,14 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <ListBox Grid.Row="0" ItemsSource="{Binding LogEntries}" FontFamily="Consolas" FontSize="11" x:Name="LogListBox"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                                 ScrollViewer.HorizontalScrollBarVisibility="Auto" Background="White">
                             <ListBox.ItemTemplate>
                                 <DataTemplate><TextBlock Text="{Binding}" TextWrapping="NoWrap"/></DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
                         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
-                            <Button Content="로그 저장" Command="{Binding SaveLogCommand}" Background="#FF2196F3" Foreground="White"/>
+                            <Button Content="로그 저장" Command="{Binding SaveLogCommand}"
+                                    Background="{StaticResource ModbusSecondaryBrush}" Foreground="White"/>
                             <Button Content="로그 지우기" Command="{Binding ClearLogCommand}"/>
                         </StackPanel>
                     </Grid>
@@ -114,12 +183,12 @@
             </Grid>
         </Grid>
 
-        <StatusBar Grid.Row="2">
-            <StatusBarItem><TextBlock Text="Modbus TCP Simulator"/></StatusBarItem>
+        <StatusBar Grid.Row="3" Background="{StaticResource ModbusDarkBrush}">
+            <StatusBarItem><TextBlock Text="Modbus TCP Simulator - Industrial Standard Protocol" Foreground="White"/></StatusBarItem>
             <Separator/>
-            <StatusBarItem><TextBlock Text="지원 영역: Coils (0x), DI (1x), HR (4x), IR (3x)"/></StatusBarItem>
+            <StatusBarItem><TextBlock Text="지원 영역: Coils (0x), DI (1x), HR (4x), IR (3x)" Foreground="#FFFFF0D0"/></StatusBarItem>
             <Separator/>
-            <StatusBarItem><TextBlock Text="기본 포트: 502"/></StatusBarItem>
+            <StatusBarItem><TextBlock Text="기본 포트: 502" Foreground="#FFFFF0D0"/></StatusBarItem>
         </StatusBar>
     </Grid>
 </Window>

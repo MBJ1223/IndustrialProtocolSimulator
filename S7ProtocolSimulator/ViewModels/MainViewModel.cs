@@ -188,27 +188,47 @@ public class MainViewModel : INotifyPropertyChanged
             _ => S7Constants.AreaFlags
         };
 
-        string prefix = SelectedAreaIndex switch
+        if (SelectedAreaIndex == 3)
         {
-            0 => "IB",
-            1 => "QB",
-            2 => "MB",
-            3 => $"DB{SelectedDbNumber}.DBB",
-            _ => "MB"
-        };
-
-        var bytes = _memory.ReadBytes(area, SelectedDbNumber, ViewStartAddress, ViewCount);
-
-        for (int i = 0; i < bytes.Length; i++)
-        {
-            MemoryItems.Add(new S7MemoryItem
+            // DB 영역: 워드(DBW) 단위로 표시
+            for (int i = 0; i < ViewCount; i++)
             {
-                Address = $"{prefix}{ViewStartAddress + i}",
-                DecimalValue = bytes[i].ToString(),
-                HexValue = $"0x{bytes[i]:X2}",
-                BinaryValue = Convert.ToString(bytes[i], 2).PadLeft(8, '0'),
-                RawValue = bytes[i]
-            });
+                int wordAddress = ViewStartAddress + (i * 2);
+                ushort wordValue = _memory.ReadWord(area, SelectedDbNumber, wordAddress);
+                MemoryItems.Add(new S7MemoryItem
+                {
+                    Address = $"DB{SelectedDbNumber}.DBW{wordAddress}",
+                    DecimalValue = wordValue.ToString(),
+                    HexValue = $"0x{wordValue:X4}",
+                    BinaryValue = Convert.ToString(wordValue, 2).PadLeft(16, '0'),
+                    RawValue = wordValue
+                });
+            }
+        }
+        else
+        {
+            // I, Q, M 영역: 바이트 단위로 표시
+            string prefix = SelectedAreaIndex switch
+            {
+                0 => "IB",
+                1 => "QB",
+                2 => "MB",
+                _ => "MB"
+            };
+
+            var bytes = _memory.ReadBytes(area, 0, ViewStartAddress, ViewCount);
+
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                MemoryItems.Add(new S7MemoryItem
+                {
+                    Address = $"{prefix}{ViewStartAddress + i}",
+                    DecimalValue = bytes[i].ToString(),
+                    HexValue = $"0x{bytes[i]:X2}",
+                    BinaryValue = Convert.ToString(bytes[i], 2).PadLeft(8, '0'),
+                    RawValue = bytes[i]
+                });
+            }
         }
     }
 
@@ -274,13 +294,13 @@ public class S7MemoryItem : INotifyPropertyChanged
     private string _decimalValue = "";
     private string _hexValue = "";
     private string _binaryValue = "";
-    private byte _rawValue;
+    private ushort _rawValue;
 
     public string Address { get => _address; set { _address = value; OnPropertyChanged(); } }
     public string DecimalValue { get => _decimalValue; set { _decimalValue = value; OnPropertyChanged(); } }
     public string HexValue { get => _hexValue; set { _hexValue = value; OnPropertyChanged(); } }
     public string BinaryValue { get => _binaryValue; set { _binaryValue = value; OnPropertyChanged(); } }
-    public byte RawValue { get => _rawValue; set { _rawValue = value; OnPropertyChanged(); } }
+    public ushort RawValue { get => _rawValue; set { _rawValue = value; OnPropertyChanged(); } }
 
     public event PropertyChangedEventHandler? PropertyChanged;
     protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)

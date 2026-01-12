@@ -10,32 +10,80 @@
     </Window.DataContext>
 
     <Window.Resources>
-        <Style TargetType="GroupBox"><Setter Property="Margin" Value="5"/><Setter Property="Padding" Value="5"/></Style>
-        <Style TargetType="Button"><Setter Property="Padding" Value="10,5"/><Setter Property="Margin" Value="2"/></Style>
-        <Style TargetType="TextBox"><Setter Property="Padding" Value="3"/><Setter Property="Margin" Value="2"/></Style>
+        <!-- S7/Siemens 테마 색상: 청록색 계열 -->
+        <Color x:Key="S7PrimaryColor">#FF009999</Color>
+        <Color x:Key="S7SecondaryColor">#FF00B3B3</Color>
+        <Color x:Key="S7AccentColor">#FF00CCCC</Color>
+        <Color x:Key="S7DarkColor">#FF006666</Color>
+        <Color x:Key="S7LightBgColor">#FFE6F7F7</Color>
+
+        <SolidColorBrush x:Key="S7PrimaryBrush" Color="{StaticResource S7PrimaryColor}"/>
+        <SolidColorBrush x:Key="S7SecondaryBrush" Color="{StaticResource S7SecondaryColor}"/>
+        <SolidColorBrush x:Key="S7AccentBrush" Color="{StaticResource S7AccentColor}"/>
+        <SolidColorBrush x:Key="S7DarkBrush" Color="{StaticResource S7DarkColor}"/>
+        <SolidColorBrush x:Key="S7LightBgBrush" Color="{StaticResource S7LightBgColor}"/>
+
+        <Style TargetType="GroupBox">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderBrush" Value="{StaticResource S7PrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
+        <Style TargetType="Button">
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="3"/>
+            <Setter Property="Margin" Value="2"/>
+        </Style>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
     </Window.Resources>
 
-    <Grid>
+    <Grid Background="{StaticResource S7LightBgBrush}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <GroupBox Grid.Row="0" Header="서버 설정">
+        <!-- 헤더 배너 -->
+        <Border Grid.Row="0" Background="{StaticResource S7PrimaryBrush}" Padding="15,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="S7" FontSize="28" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
+                    <TextBlock Text="PROTOCOL" FontSize="14" Foreground="#FFCCFFFF" VerticalAlignment="Bottom" Margin="5,0,0,5"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="Siemens PLC Simulator" FontSize="14" Foreground="#FFE0FFFF"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Border Grid.Column="2" Background="#FF007777" CornerRadius="3" Padding="10,5">
+                    <TextBlock Text="ISO-on-TCP / RFC 1006" Foreground="White" FontSize="11"/>
+                </Border>
+            </Grid>
+        </Border>
+
+        <GroupBox Grid.Row="1" Header="서버 설정" Margin="5,5,5,0">
             <StackPanel Orientation="Horizontal">
                 <Label Content="포트:" VerticalAlignment="Center"/>
                 <TextBox Text="{Binding Port}" Width="80" IsEnabled="{Binding CanStart}"/>
-                <Button Content="서버 시작" Command="{Binding StartServerCommand}" Background="#FF4CAF50" Foreground="White"/>
-                <Button Content="서버 중지" Command="{Binding StopServerCommand}" Background="#FFF44336" Foreground="White"/>
+                <Button Content="서버 시작" Command="{Binding StartServerCommand}"
+                        Background="{StaticResource S7PrimaryBrush}" Foreground="White"/>
+                <Button Content="서버 중지" Command="{Binding StopServerCommand}"
+                        Background="#FFF44336" Foreground="White"/>
                 <Separator Margin="10,0"/>
                 <Label Content="상태:" VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" FontWeight="Bold"/>
+                <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" FontWeight="Bold"
+                           Foreground="{StaticResource S7DarkBrush}"/>
             </StackPanel>
         </GroupBox>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="500"/>
@@ -67,12 +115,22 @@
                     <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,5">
                         <Button Content="새로고침" Command="{Binding RefreshMemoryCommand}"/>
                         <Button Content="메모리 초기화" Command="{Binding ClearMemoryCommand}" Background="#FFFFC107"/>
-                        <Button Content="값 편집" Click="EditMemory_Click" Background="#FF2196F3" Foreground="White"/>
+                        <Button Content="값 편집" Click="EditMemory_Click"
+                                Background="{StaticResource S7SecondaryBrush}" Foreground="White"/>
                     </StackPanel>
 
                     <DataGrid Grid.Row="2" ItemsSource="{Binding MemoryItems}" AutoGenerateColumns="False"
                               IsReadOnly="True" CanUserAddRows="False" GridLinesVisibility="All"
-                              AlternatingRowBackground="#FFF5F5F5" RowHeight="24" FontFamily="Consolas">
+                              AlternatingRowBackground="{StaticResource S7LightBgBrush}" RowHeight="24" FontFamily="Consolas"
+                              ColumnHeaderHeight="28" RowHeaderWidth="0">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="{StaticResource S7PrimaryBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Padding" Value="8,4"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="주소" Binding="{Binding Address}" Width="100"/>
                             <DataGridTextColumn Header="10진수" Binding="{Binding DecimalValue}" Width="80"/>
@@ -90,7 +148,15 @@
                 </Grid.RowDefinitions>
 
                 <GroupBox Grid.Row="0" Header="연결된 클라이언트">
-                    <DataGrid ItemsSource="{Binding ConnectedClients}" AutoGenerateColumns="False" IsReadOnly="True" FontSize="11">
+                    <DataGrid ItemsSource="{Binding ConnectedClients}" AutoGenerateColumns="False" IsReadOnly="True" FontSize="11"
+                              AlternatingRowBackground="{StaticResource S7LightBgBrush}">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="{StaticResource S7DarkBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Padding" Value="5,3"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="IP" Binding="{Binding RemoteEndPoint}" Width="*"/>
                             <DataGridTextColumn Header="Rack/Slot" Binding="{Binding RackSlot}" Width="70"/>
@@ -107,13 +173,14 @@
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <ListBox Grid.Row="0" ItemsSource="{Binding LogEntries}" FontFamily="Consolas" FontSize="11" x:Name="LogListBox"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                                 ScrollViewer.HorizontalScrollBarVisibility="Auto" Background="White">
                             <ListBox.ItemTemplate>
                                 <DataTemplate><TextBlock Text="{Binding}" TextWrapping="NoWrap"/></DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
                         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
-                            <Button Content="로그 저장" Command="{Binding SaveLogCommand}" Background="#FF2196F3" Foreground="White"/>
+                            <Button Content="로그 저장" Command="{Binding SaveLogCommand}"
+                                    Background="{StaticResource S7SecondaryBrush}" Foreground="White"/>
                             <Button Content="로그 지우기" Command="{Binding ClearLogCommand}"/>
                         </StackPanel>
                     </Grid>
@@ -121,12 +188,12 @@
             </Grid>
         </Grid>
 
-        <StatusBar Grid.Row="2">
-            <StatusBarItem><TextBlock Text="S7 Protocol (ISO-on-TCP) Simulator - RFC 1006"/></StatusBarItem>
+        <StatusBar Grid.Row="3" Background="{StaticResource S7DarkBrush}">
+            <StatusBarItem><TextBlock Text="S7 Protocol (ISO-on-TCP) Simulator - RFC 1006" Foreground="White"/></StatusBarItem>
             <Separator/>
-            <StatusBarItem><TextBlock Text="지원 영역: I, Q, M, DB"/></StatusBarItem>
+            <StatusBarItem><TextBlock Text="지원 영역: I, Q, M, DB" Foreground="#FFCCFFFF"/></StatusBarItem>
             <Separator/>
-            <StatusBarItem><TextBlock Text="기본 포트: 102"/></StatusBarItem>
+            <StatusBarItem><TextBlock Text="기본 포트: 102" Foreground="#FFCCFFFF"/></StatusBarItem>
         </StatusBar>
     </Grid>
 </Window>

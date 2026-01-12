@@ -14,9 +14,24 @@
     </Window.DataContext>
 
     <Window.Resources>
+        <!-- MC/Mitsubishi 테마 색상: 빨간색 계열 -->
+        <Color x:Key="McPrimaryColor">#FFCC0000</Color>
+        <Color x:Key="McSecondaryColor">#FFDD3333</Color>
+        <Color x:Key="McAccentColor">#FFEE5555</Color>
+        <Color x:Key="McDarkColor">#FF990000</Color>
+        <Color x:Key="McLightBgColor">#FFFFF0F0</Color>
+
+        <SolidColorBrush x:Key="McPrimaryBrush" Color="{StaticResource McPrimaryColor}"/>
+        <SolidColorBrush x:Key="McSecondaryBrush" Color="{StaticResource McSecondaryColor}"/>
+        <SolidColorBrush x:Key="McAccentBrush" Color="{StaticResource McAccentColor}"/>
+        <SolidColorBrush x:Key="McDarkBrush" Color="{StaticResource McDarkColor}"/>
+        <SolidColorBrush x:Key="McLightBgBrush" Color="{StaticResource McLightBgColor}"/>
+
         <Style TargetType="GroupBox">
             <Setter Property="Margin" Value="5"/>
             <Setter Property="Padding" Value="5"/>
+            <Setter Property="BorderBrush" Value="{StaticResource McPrimaryBrush}"/>
+            <Setter Property="BorderThickness" Value="2"/>
         </Style>
         <Style TargetType="Button">
             <Setter Property="Padding" Value="10,5"/>
@@ -28,31 +43,52 @@
         </Style>
     </Window.Resources>
 
-    <Grid>
+    <Grid Background="{StaticResource McLightBgBrush}">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
+        <!-- 헤더 배너 -->
+        <Border Grid.Row="0" Background="{StaticResource McPrimaryBrush}" Padding="15,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Horizontal">
+                    <TextBlock Text="MC" FontSize="28" FontWeight="Bold" Foreground="White" VerticalAlignment="Center"/>
+                    <TextBlock Text="PROTOCOL" FontSize="14" Foreground="#FFFFCCCC" VerticalAlignment="Bottom" Margin="5,0,0,5"/>
+                </StackPanel>
+                <TextBlock Grid.Column="1" Text="Mitsubishi PLC Simulator" FontSize="14" Foreground="#FFFFDDDD"
+                           VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                <Border Grid.Column="2" Background="#FF880000" CornerRadius="3" Padding="10,5">
+                    <TextBlock Text="MELSEC 3E Frame" Foreground="White" FontSize="11"/>
+                </Border>
+            </Grid>
+        </Border>
+
         <!-- 상단: 서버 설정 -->
-        <GroupBox Grid.Row="0" Header="서버 설정">
+        <GroupBox Grid.Row="1" Header="서버 설정" Margin="5,5,5,0">
             <StackPanel Orientation="Horizontal">
                 <Label Content="포트:" VerticalAlignment="Center"/>
                 <TextBox Text="{Binding Port}" Width="80" IsEnabled="{Binding CanStart}"/>
                 <Button Content="서버 시작" Command="{Binding StartServerCommand}"
-                        IsEnabled="{Binding CanStart}" Background="#FF4CAF50" Foreground="White"/>
+                        IsEnabled="{Binding CanStart}" Background="{StaticResource McPrimaryBrush}" Foreground="White"/>
                 <Button Content="서버 중지" Command="{Binding StopServerCommand}"
-                        IsEnabled="{Binding CanStop}" Background="#FFF44336" Foreground="White"/>
+                        IsEnabled="{Binding CanStop}" Background="#FF666666" Foreground="White"/>
                 <Separator Margin="10,0"/>
                 <Label Content="상태:" VerticalAlignment="Center"/>
                 <TextBlock Text="{Binding StatusText}" VerticalAlignment="Center" FontWeight="Bold"
-                           Foreground="{Binding IsRunning, Converter={x:Null}}"/>
+                           Foreground="{StaticResource McDarkBrush}"/>
             </StackPanel>
         </GroupBox>
 
         <!-- 중앙: 메인 컨텐츠 -->
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="500"/>
@@ -91,7 +127,7 @@
                             <Button Content="메모리 초기화" Command="{Binding ClearMemoryCommand}"
                                     Background="#FFFFC107"/>
                             <Button Content="값 편집" Click="EditMemory_Click"
-                                    Background="#FF2196F3" Foreground="White"/>
+                                    Background="{StaticResource McSecondaryBrush}" Foreground="White"/>
                         </StackPanel>
                     </Grid>
 
@@ -103,9 +139,19 @@
                               CanUserAddRows="False"
                               CanUserDeleteRows="False"
                               GridLinesVisibility="All"
-                              AlternatingRowBackground="#FFF5F5F5"
+                              AlternatingRowBackground="{StaticResource McLightBgBrush}"
                               RowHeight="24"
-                              FontFamily="Consolas">
+                              FontFamily="Consolas"
+                              ColumnHeaderHeight="28"
+                              RowHeaderWidth="0">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="{StaticResource McPrimaryBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Padding" Value="8,4"/>
+                                <Setter Property="FontWeight" Value="SemiBold"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="주소" Binding="{Binding Address}" Width="80"/>
                             <DataGridTextColumn Header="10진수" Binding="{Binding DecimalValue}" Width="80"/>
@@ -129,7 +175,15 @@
                               AutoGenerateColumns="False"
                               IsReadOnly="True"
                               CanUserAddRows="False"
-                              FontSize="11">
+                              FontSize="11"
+                              AlternatingRowBackground="{StaticResource McLightBgBrush}">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="{StaticResource McDarkBrush}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="Padding" Value="5,3"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="IP" Binding="{Binding RemoteEndPoint}" Width="*"/>
                             <DataGridTextColumn Header="수신" Binding="{Binding BytesReceived}" Width="60"/>
@@ -151,7 +205,8 @@
                                  FontFamily="Consolas"
                                  FontSize="11"
                                  x:Name="LogListBox"
-                                 ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                 Background="White">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <TextBlock Text="{Binding}" TextWrapping="NoWrap"/>
@@ -161,7 +216,7 @@
 
                         <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,5,0,0">
                             <Button Content="로그 저장" Command="{Binding SaveLogCommand}"
-                                    Background="#FF2196F3" Foreground="White"/>
+                                    Background="{StaticResource McSecondaryBrush}" Foreground="White"/>
                             <Button Content="로그 지우기" Command="{Binding ClearLogCommand}"/>
                         </StackPanel>
                     </Grid>
@@ -170,17 +225,17 @@
         </Grid>
 
         <!-- 하단: 정보 -->
-        <StatusBar Grid.Row="2">
+        <StatusBar Grid.Row="3" Background="{StaticResource McDarkBrush}">
             <StatusBarItem>
-                <TextBlock Text="MC Protocol (3E Frame) Simulator - Binary/ASCII 자동 감지 지원"/>
+                <TextBlock Text="MC Protocol (3E Frame) Simulator - Binary/ASCII 자동 감지" Foreground="White"/>
             </StatusBarItem>
             <Separator/>
             <StatusBarItem>
-                <TextBlock Text="지원 디바이스: D, M, X, Y"/>
+                <TextBlock Text="지원 디바이스: D, M, X, Y" Foreground="#FFFFCCCC"/>
             </StatusBarItem>
             <Separator/>
             <StatusBarItem>
-                <TextBlock Text="지원 명령: 일괄(0401/1401), 랜덤(0403/1402)"/>
+                <TextBlock Text="지원 명령: 일괄(0401/1401), 랜덤(0403/1402)" Foreground="#FFFFCCCC"/>
             </StatusBarItem>
         </StatusBar>
     </Grid>
