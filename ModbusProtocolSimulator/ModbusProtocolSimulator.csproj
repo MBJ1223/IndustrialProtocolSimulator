@@ -6,8 +6,12 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ApplicationIcon></ApplicationIcon>
+    <ApplicationIcon>Modbus.ico</ApplicationIcon>
     <StartupObject>ModbusProtocolSimulator.App</StartupObject>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Modbus.ico" />
+  </ItemGroup>
 
 </Project>
